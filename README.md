@@ -21,10 +21,24 @@ keyStates
 ---
 
 ```js
-isUpdatePaused() 
+isUpdatePaused
 ```
 
 - does not need documentation
+---
+
+```js
+isUpdateSyncedWithDraw
+```
+
+- Note: changes to this variable made after init() may not be reflected
+---
+
+```js
+updateTime
+```
+
+- time between updates (in milliseconds)
 ---
 
 ```js

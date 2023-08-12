@@ -8,7 +8,8 @@ class Mivka {
 		this.keyStates = new Map();
 
 		this.updateTime = 10; // in ms
-		this.isUpdatePaused_ = false;
+		this.isUpdatePaused = false;
+        this.isUpdateSyncedWithDraw = false;
 	}
 
 	redraw() { // should only be called by init()
@@ -40,9 +41,9 @@ class Mivka {
 			setTimeout(callback, 1000 / 30);
 		};
 
-		if (!this.isUpdatePaused_) {
+		if (!this.isUpdatePaused) {
 			reqAnimationFrame(this.redraw.bind(this));
-			this.update();
+			if (this.isUpdateSyncedWithDraw) this.update();
 		}
 	};
 
@@ -124,6 +125,7 @@ class Mivka {
 		}
 		
 		that.redraw();
+        if (!that.isUpdateSyncedWithDraw) setInterval(that.update.bind(that), that.updateTime);
 	}
 
 	update() {}
@@ -134,16 +136,12 @@ class Mivka {
 		return this.keyStates.get(key);
 	}
 
-	isUpdatePaused() {
-		return isUpdatePaused_;
-	}
-
 	pauseUpdate() {
-		isUpdatePaused_ = true;
+		isUpdatePaused = true;
 	}
 
 	startUpdate() {
-		isUpdatePaused_ = false;
+		isUpdatePaused = false;
 		redraw();
 	}
 
