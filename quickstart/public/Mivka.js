@@ -6,6 +6,9 @@ class Mivka {
 		this.canvas.height = window.innerHeight;
 		this.context = canvas.getContext('2d');
 		this.keyStates = new Map();
+        this.mouseX = undefined;
+        this.mouseY = undefined;
+        this.isMouseDown = undefined;
 
 		this.updateTime = 10; // in ms
 		this.isUpdatePaused = false;
@@ -74,17 +77,6 @@ class Mivka {
 
 		}
 	
-		window.addEventListener('mousemove', function (e) {
-			this.mouseX = e.pageX - canvas.offsetLeft;
-			this.mouseY = e.pageY - canvas.offsetTop;
-		});
-	
-		if (typeof this.mousemove != 'undefined') window.addEventListener('mousemove', this.mousemove);
-	
-		if (typeof this.mouseup != 'undefined') window.addEventListener('mouseup', this.mouseup);
-	
-		if (typeof this.mousedown != 'undefined') window.addEventListener('mousedown', this.mousedown);
-	
 		const that = this;
 
 		window.addEventListener('resize' , function () {
@@ -94,27 +86,31 @@ class Mivka {
 			}
 		});
 
-		if (typeof this.keydown != 'undefined') {
-			window.addEventListener('keydown', function (e) {
-				that.keyStates.set(e.key, true);
-				that.keydown(e);
-			});
-		} else {
-			window.addEventListener('keydown', function (e) {
-				that.keyStates.set(e.key, true);
-			});
-		}
+        window.addEventListener('keydown', function (e) {
+            that.keyStates.set(e.key, true);
+            that.keydown?.(e);
+        });
 	
-		if (typeof this.keyup != 'undefined') {
-			window.addEventListener('keyup', function (e) {
-				that.keyStates.set(e.key, false);
-				that.keyup(e);
-			});
-		} else {
-			window.addEventListener('keyup', function (e) {
-				that.keyStates.set(e.key, false);
-			});
-		}
+        window.addEventListener('keyup', function (e) {
+            that.keyStates.set(e.key, false);
+            that.keyup?.(e);
+        });
+
+        window.addEventListener('mousemove', function (e) {
+            that.mouseX = e.pageX - canvas.offsetLeft;
+            that.mouseY = e.pageY - canvas.offsetTop;
+            that.mousemove?.(e);
+        });
+
+        window.addEventListener('mousedown', function (e) {
+            that.isMouseDown = true;
+            that.mousedown?.(e);
+        });
+
+        window.addEventListener('mouseup', function (e) {
+            that.isMouseDown = false;
+            that.mouseup?.(e);
+        });
 	
 		if (typeof this.draw == 'undefined') {
 			that.redraw = function () {
